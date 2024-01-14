@@ -17,21 +17,23 @@ function App() {
 	};
 
 	return (
-		<div>
+		<div className='app-container'>
 			<Header />
-			{selectedCourse ? (
-				<CourseInfo
-					course={selectedCourse}
-					authors={mockedAuthorsList}
-					onBackClick={handleBackClick}
-				/>
-			) : (
-				<Courses
-					courses={mockedCoursesList}
-					authors={mockedAuthorsList}
-					onShowDetailsClick={handleShowDetails}
-				/>
-			)}
+			<div>
+				{selectedCourse ? (
+					<CourseInfo
+						course={selectedCourse}
+						authors={mockedAuthorsList}
+						onBackClick={handleBackClick}
+					/>
+				) : (
+					<Courses
+						courses={mockedCoursesList}
+						authors={mockedAuthorsList}
+						onShowDetailsClick={handleShowDetails}
+					/>
+				)}
+			</div>
 		</div>
 	);
 }

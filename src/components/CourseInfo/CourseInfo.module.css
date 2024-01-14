@@ -26,11 +26,9 @@
     margin-bottom: 20px;
   }
 
-  .courseCard .button {
-    padding: 10px;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
+  .courseCard > button {
+    /* > symbol helps us to find first child element*/
+   margin-top: 1rem;
   }
 
  

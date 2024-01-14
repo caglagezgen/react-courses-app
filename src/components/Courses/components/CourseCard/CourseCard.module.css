@@ -1,36 +1,32 @@
-.courseCard{
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    background: #F7F7F7;
-    margin-bottom: 20px;
-    padding: 20px;
-    box-shadow: 0px 2px 3px #aaa;
-
+.courseCard {
+	border: 1px solid #e0e0e0;
+	border-radius: 5px;
+	background: #f7f7f7;
+	margin-bottom: 20px;
+	padding: 20px;
+	box-shadow: 0px 2px 3px #aaa;
 }
+
 .courseCard .actions {
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .courseCard h2 {
-    margin-top: 0;
-  }
-  
-  .courseCard p {
-    margin-bottom: 0;
-  }
-  
-  .courseCard .author {
-    font-size: 14px;
-    color: #888;
-    margin-bottom: 20px;
-  }
+	display: flex;
+	justify-content: flex-end;
+  gap: 10px;
+}
 
-  .courseCard .button {
-    padding: 10px;
-    border: none;
-    background-color: transparent;
-    cursor: pointer;
-  }
+.courseCard h2 {
+	margin-top: 0;
+}
 
- 
+.courseCard p {
+	margin-bottom: 0;
+}
+
+.author {
+	font-size: 14px;
+	color: #888;
+	margin-bottom: 20px;
+}
+
+.courseCard > button {
+	margin-top: 1rem;
+}
