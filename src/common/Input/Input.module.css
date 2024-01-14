@@ -1,0 +1,17 @@
+input {
+	font-size: 16px;
+	padding: 20px;
+	width: 100%;
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	box-sizing: border-box; /* makes the width and height properties include the padding and border, but not the margin. This typically makes layouts easier to manage. */
+}
+
+input:hover {
+	border-color: #888;
+}
+
+input:focus {
+	border-color: #0076ff;
+	outline: none;
+}
