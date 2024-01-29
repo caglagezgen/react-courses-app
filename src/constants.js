@@ -9,6 +9,7 @@ export const DELETE_AUTHOR_BUTTON_TEXT = 'Delete Author';
 export const REGISTRATION_BUTTON_TEXT = 'Registration';
 export const LOGIN_BUTTON_TEXT = 'Login';
 export const BACK_TO_COURSES_BUTTON_TEXT = 'Back to courses';
+export const BRAND_NAME = 'REACT COURSES';
 
 export const mockedCoursesList = [
 	{

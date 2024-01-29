@@ -21,8 +21,7 @@
     "eslint:fix": "eslint --fix --ext .js --ext .jsx src",
     "test:nowatch": "react-scripts test --watchAll=false",
     "prepare": "husky install",
-    "prepublish": "npm run eslint:fix",
-    "build-css": "tailwindcss build src/styles.css -o public/styles.css"
+    "prepublish": "npm run eslint:fix"
   },
   "eslintConfig": {
     "extends": [
