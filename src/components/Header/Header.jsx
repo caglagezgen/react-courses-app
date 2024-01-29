@@ -19,10 +19,10 @@ const Header = () => {
 
 	return (
 		<div className='flex justify-between px-10 border-b-2 border-blue-600 mb-12'>
-			<Logo />
-			<h1 className='space-between py-3 pl-1 cursor-pointer font-bold'>
-				{BRAND_NAME}
-			</h1>
+			<div className='flex justify-start items-center'>
+				<Logo />
+				<h1 className='ml-2 cursor-pointer font-bold'>{BRAND_NAME}</h1>
+			</div>
 			<div className='flex items-center'>
 				{localStorage.getItem('user') &&
 					location.pathname !== '/login' &&
