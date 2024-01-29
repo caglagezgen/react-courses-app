@@ -1,41 +1,61 @@
-import React, { useState } from 'react';
-import { Courses } from 'components/Courses/Courses';
-import './App.css';
-import { Header } from './components/Header/Header';
-import { CourseInfo } from 'components/CourseInfo/CourseInfo';
+import { useState, useRef } from 'react';
+import { BrowserRouter as Router } from 'react-router-dom';
+
+import Header from './../src/components/Header/Header.jsx';
+
+import AllRoutes from './routes/AllRoutes';
+
 import { mockedCoursesList, mockedAuthorsList } from './constants';
 
-function App() {
-	const [selectedCourse, setSelectedCourse] = useState(null);
+const App = () => {
+	const [courses, setCourses] = useState(mockedCoursesList);
+	const [filteredCourses, setFilteredCourses] = useState();
+	const [authors, setAuthors] = useState(mockedAuthorsList);
 
-	const handleShowDetails = (course) => {
-		setSelectedCourse(course);
+	const searchedCoursesRef = useRef();
+
+	const addNewCourse = (newCourse) => {
+		setCourses((previousState) => {
+			return [...previousState, newCourse];
+		});
 	};
 
-	const handleBackClick = () => {
-		setSelectedCourse(null);
+	const searchThroughCourses = () => {
+		if (searchedCoursesRef.current.value === '') {
+			setFilteredCourses(courses);
+		} else {
+			setFilteredCourses(() =>
+				courses.filter(
+					(course) =>
+						course.title.toLowerCase() ===
+							searchedCoursesRef.current.value.toLowerCase() ||
+						course.id === searchedCoursesRef.current.value
+				)
+			);
+		}
+	};
+
+	const updateAuthors = (updatedAuthors) => {
+		setAuthors((previousState) => {
+			return [...previousState, ...updatedAuthors];
+		});
 	};
 
 	return (
-		<div className='app-container'>
+		<Router>
 			<Header />
-			<div>
-				{selectedCourse ? (
-					<CourseInfo
-						course={selectedCourse}
-						authors={mockedAuthorsList}
-						onBackClick={handleBackClick}
-					/>
-				) : (
-					<Courses
-						courses={mockedCoursesList}
-						authors={mockedAuthorsList}
-						onShowDetailsClick={handleShowDetails}
-					/>
-				)}
-			</div>
-		</div>
+			<AllRoutes
+				courses={courses}
+				filteredCourses={filteredCourses}
+				authors={authors}
+				setFilteredCourses={setFilteredCourses}
+				searchThroughCourses={searchThroughCourses}
+				searchedCoursesRef={searchedCoursesRef}
+				addNewCourse={addNewCourse}
+				updateAuthors={updateAuthors}
+			/>
+		</Router>
 	);
-}
+};
 
 export default App;

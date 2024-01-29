@@ -1,9 +1,15 @@
-export const BUTTON_SEARCH = 'SEARCH';
-export const BRAND_NAME = 'REACT COURSES';
-export const BUTTON_ADD_NEW_COURSE = 'ADD NEW COURSE';
-export const BUTTON_SHOW_COURSE = 'SHOW COURSE';
-export const BUTTON_LOGOUT = 'LOGOUT';
-export const BUTTON_SHOW_DETAILS = 'SHOW DETAILS';
+export const LOGOUT_BUTTON_TEXT = 'Logout';
+export const SEARCH_BUTTON_TEXT = 'Search';
+export const SHOW_COURSE_BUTTON_TEXT = 'Show course';
+export const ADD_NEW_COURSE_BUTTON_TEXT = 'Add new course';
+export const CREATE_COURSE_BUTTON_TEXT = 'Create course';
+export const CREATE_AUTHOR_BUTTON_TEXT = 'Create author';
+export const ADD_AUTHOR_BUTTON_TEXT = 'Add author';
+export const DELETE_AUTHOR_BUTTON_TEXT = 'Delete Author';
+export const REGISTRATION_BUTTON_TEXT = 'Registration';
+export const LOGIN_BUTTON_TEXT = 'Login';
+export const BACK_TO_COURSES_BUTTON_TEXT = 'Back to courses';
+
 export const mockedCoursesList = [
 	{
 		id: 'de5aaa59-90f5-4dbc-b8a9-aaf205c551ba',
