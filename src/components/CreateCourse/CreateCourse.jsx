@@ -79,7 +79,7 @@ const CreateCourse = ({ authors, addNewCourse, updateAuthors }) => {
 				<div className='grid grid-cols-2 gap-10 p-6'>
 					<div>
 						<AddNewAuthor
-							newAuthorRef={newAuthorRef}
+							ref={newAuthorRef}
 							showAuthorError={showAuthorError}
 							setShowAuthorError={setShowAuthorError}
 							setNewAuthors={setNewAuthors}

@@ -69,7 +69,7 @@ const Registration = () => {
 					width={100}
 					alignSelf='start'
 					marginBottom={5}
-					refValue={nameRef}
+					ref={nameRef}
 				/>
 				<Input
 					type='email'
@@ -78,7 +78,7 @@ const Registration = () => {
 					width={100}
 					alignSelf='start'
 					marginBottom={5}
-					refValue={emailRef}
+					ref={emailRef}
 				/>
 				<Input
 					type='password'
@@ -87,7 +87,7 @@ const Registration = () => {
 					width={100}
 					alignSelf='start'
 					marginBottom={5}
-					refValue={passwordRef}
+					ref={passwordRef}
 				/>
 				<Button buttonText={REGISTRATION_BUTTON_TEXT} />
 			</form>

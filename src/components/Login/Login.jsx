@@ -78,7 +78,7 @@ const Login = () => {
 					placeholderText='Enter email'
 					width={100}
 					alignSelf='start'
-					refValue={emailRef}
+					ref={emailRef}
 					marginBottom={5}
 				/>
 				<Input
@@ -87,7 +87,7 @@ const Login = () => {
 					placeholderText='Enter password'
 					width={100}
 					alignSelf='start'
-					refValue={passwordRef}
+					ref={passwordRef}
 					marginBottom={5}
 				/>
 				<Button buttonText={LOGIN_BUTTON_TEXT} />
