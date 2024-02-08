@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import { UseDispatch, useDispatch } from 'react-redux';
 
 import Button from '../../../../common/Button/Button';
 
@@ -7,6 +8,7 @@ import formatCreationDate from '../../../../helpers/formatCreationDate';
 import getCourseDuration from '../../../../helpers/getCourseDuration';
 
 import { SHOW_COURSE_BUTTON_TEXT } from '../../../../constants';
+import { deleteCourseAction } from 'store/courses/actions';
 
 const CourseCard = ({
 	id,
@@ -16,7 +18,13 @@ const CourseCard = ({
 	duration,
 	authors,
 }) => {
+	const dispatch = useDispatch();
+
 	const navigate = useNavigate();
+
+	const deleteCourse = () => {
+		dispatch(deleteCourseAction(id));
+	};
 
 	const showCourse = () => {
 		navigate(`/courses/${id}`);
