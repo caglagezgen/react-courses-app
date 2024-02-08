@@ -1,4 +1,4 @@
-export function getCourseDuration(durationInMinutes) {
+export default function getCourseDuration(durationInMinutes) {
 	const hours = Math.floor(durationInMinutes / 60);
 	const minutes = durationInMinutes % 60;
 

@@ -1,18 +1,20 @@
-import React from 'react';
-import styles from './Button.module.css';
 import PropTypes from 'prop-types';
 
-export function Button({ buttonText, onClick, icon }) {
-	return (
-		<button className={styles.button} onClick={onClick}>
-			{icon && <img src={icon} className={styles.buttonImg} alt='' />}
-			{buttonText}
-		</button>
-	);
-}
+const Button = ({ buttonText, onClick, icon }) => (
+	<button
+		onClick={onClick}
+		className='w-36
+  border border-blue-700 h-10 rounded-md hover:bg-blue-700 hover:text-white transition-all ease-linear duration-75'
+	>
+		{icon && <img src={icon} className='w-10 mr-5' alt='' />}
+		{buttonText}
+	</button>
+);
+
+export default Button;
 
 Button.propTypes = {
-	buttonText: PropTypes.string,
-	onClick: PropTypes.func.isRequired,
+	buttonText: PropTypes.string.isRequired,
+	onClick: PropTypes.func,
 	icon: PropTypes.string,
 };

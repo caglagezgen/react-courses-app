@@ -1,45 +1,79 @@
-import React from 'react';
-import styles from './CourseCard.module.css';
-import { Button } from 'common/Button/Button';
-import editIcon from '../../../../assets/icons/icons-edit.png';
-import deleteIcon from '../../../../assets/icons/delete.png';
-import { BUTTON_SHOW_DETAILS } from 'constants';
+import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
-export function CourseCard({ course, authors, onShowDetailsClick }) {
-	// prepare list of authors name
-	const authorsNames = authors
-		.filter((author) => course.authors.includes(author.id))
-		.map((author) => author.name)
-		.join(',');
+import Button from '../../../../common/Button/Button';
 
-	// convert duration from minutes to hours and minutes format
-	const durationHours = Math.floor(course.duration / 60);
-	const durationMinutes = course.duration % 60;
+import formatCreationDate from '../../../../helpers/formatCreationDate';
+import getCourseDuration from '../../../../helpers/getCourseDuration';
+
+import { SHOW_COURSE_BUTTON_TEXT } from '../../../../constants';
+
+const CourseCard = ({
+	id,
+	title,
+	description,
+	creationDate,
+	duration,
+	authors,
+}) => {
+	const navigate = useNavigate();
+
+	const showCourse = () => {
+		navigate(`/courses/${id}`);
+	};
+
 	return (
-		<div className={styles.courseCard}>
-			<div className={styles.actions}>
-				<Button
-					icon={editIcon}
-					onClick={() => console.log(`Edit ${course.title}`)}
-				/>
-				<Button
-					icon={deleteIcon}
-					onClick={() => console.log(`Delete ${course.title}`)}
-				/>
+		<div className='border border-orange-700 p-3 m-10 rounded-md'>
+			<div className='grid grid-cols-5 gap-14'>
+				<div className='col-span-3'>
+					<h1 className='font-bold text-2xl p-3'>{title}</h1>
+					<p className='p-3'>{description}</p>
+				</div>
+				<div className='col-span-2'>
+					<div className='flex-col p-3'>
+						<div>
+							<p className='m-2 overflow-ellipsis overflow-hidden whitespace-nowrap'>
+								<strong>Authors:</strong>
+								{authors.map((author, idx) => (
+									<span key={author?.id}>
+										{' '}
+										{author?.name}
+										{authors.length === idx + 1 ? '' : ','}
+									</span>
+								))}
+							</p>
+							<p className='m-2'>
+								<strong>Duration:</strong> {getCourseDuration(duration)} hours
+							</p>
+							<p className='m-2'>
+								<strong>Created:</strong> {formatCreationDate(creationDate)}
+							</p>
+						</div>
+						<div className='flex justify-center mt-5'>
+							<Button
+								buttonText={SHOW_COURSE_BUTTON_TEXT}
+								onClick={showCourse}
+							/>
+						</div>
+					</div>
+				</div>
 			</div>
-			<h2>{course.title}</h2>
-			<div className={styles.author}>Authors: {authorsNames}</div>
-			<div className={styles.duration}>
-				Duration: {durationHours}h {durationMinutes}
-			</div>
-			<div className={styles.creationDate}>
-				Created: {new Date(course.creationDate).toLocaleDateString()}
-			</div>
-			<p>{course.description}</p>
-			<Button
-				buttonText={BUTTON_SHOW_DETAILS}
-				onClick={() => onShowDetailsClick(course)}
-			/>
 		</div>
 	);
-}
+};
+
+export default CourseCard;
+
+CourseCard.propTypes = {
+	id: PropTypes.string,
+	title: PropTypes.string,
+	description: PropTypes.string,
+	creationDate: PropTypes.string,
+	duration: PropTypes.number,
+	authors: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.string,
+			name: PropTypes.string,
+		})
+	),
+};
