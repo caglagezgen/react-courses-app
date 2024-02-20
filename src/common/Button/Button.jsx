@@ -1,12 +1,16 @@
 import PropTypes from 'prop-types';
 
-const Button = ({ buttonText, onClick, icon }) => (
+const Button = ({ buttonText, onClick, width, margin, title }) => (
 	<button
 		onClick={onClick}
-		className='w-36
-  border border-blue-700 h-10 rounded-md hover:bg-blue-700 hover:text-white transition-all ease-linear duration-75'
+		style={{
+			width: width ? `${width}rem` : '8rem',
+			margin: margin ? `${margin}px` : 0,
+		}}
+		className={`w-36
+  border border-blue-700 h-10 rounded-md hover:bg-blue-700 hover:text-white transition-all ease-linear duration-75`}
+		title={title}
 	>
-		{icon && <img src={icon} className='w-10 mr-5' alt='' />}
 		{buttonText}
 	</button>
 );
@@ -14,7 +18,12 @@ const Button = ({ buttonText, onClick, icon }) => (
 export default Button;
 
 Button.propTypes = {
-	buttonText: PropTypes.string.isRequired,
+	buttonText: PropTypes.oneOfType([
+		PropTypes.string.isRequired,
+		PropTypes.object.isRequired,
+	]),
 	onClick: PropTypes.func,
-	icon: PropTypes.string,
+	width: PropTypes.number,
+	margin: PropTypes.number,
+	title: PropTypes.string,
 };

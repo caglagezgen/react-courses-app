@@ -1,13 +1,19 @@
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { UseDispatch, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Button from '../../../../common/Button/Button';
 
 import formatCreationDate from '../../../../helpers/formatCreationDate';
 import getCourseDuration from '../../../../helpers/getCourseDuration';
 
-import { SHOW_COURSE_BUTTON_TEXT } from '../../../../constants';
+import {
+	SHOW_COURSE_BUTTON_TEXT,
+	EDIT_COURSE_BUTTON_TEXT,
+	DELETE_COURSE_BUTTON_TEXT,
+} from '../../../../constants';
 import { deleteCourseAction } from 'store/courses/actions';
 
 const CourseCard = ({
@@ -31,7 +37,7 @@ const CourseCard = ({
 	};
 
 	return (
-		<div className='border border-orange-700 p-3 m-10 rounded-md'>
+		<div className='border border-grey-700 p-3 m-10 rounded-md'>
 			<div className='grid grid-cols-5 gap-14'>
 				<div className='col-span-3'>
 					<h1 className='font-bold text-2xl p-3'>{title}</h1>
@@ -43,7 +49,7 @@ const CourseCard = ({
 							<p className='m-2 overflow-ellipsis overflow-hidden whitespace-nowrap'>
 								<strong>Authors:</strong>
 								{authors.map((author, idx) => (
-									<span key={author?.id}>
+									<span key={uuidv4()}>
 										{' '}
 										{author?.name}
 										{authors.length === idx + 1 ? '' : ','}
@@ -61,6 +67,24 @@ const CourseCard = ({
 							<Button
 								buttonText={SHOW_COURSE_BUTTON_TEXT}
 								onClick={showCourse}
+								width={8}
+								margin={5}
+								title={`Show ${title} course`}
+							/>
+							<Button
+								buttonText={EDIT_COURSE_BUTTON_TEXT}
+								icon={<FontAwesomeIcon icon='edit' />}
+								width={4}
+								margin={5}
+								title='Update Course'
+							/>
+							<Button
+								buttonText={DELETE_COURSE_BUTTON_TEXT}
+								icon={<FontAwesomeIcon icon='trash-alt' />}
+								width={4}
+								margin={5}
+								onClick={deleteCourse}
+								title='Delete Course'
 							/>
 						</div>
 					</div>

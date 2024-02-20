@@ -1,59 +1,38 @@
-import { useState, useRef } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
-import Header from './../src/components/Header/Header.jsx';
-
+import Header from './components/Header/Header';
 import AllRoutes from './routes/AllRoutes';
 
-import { mockedCoursesList, mockedAuthorsList } from './constants';
+import apiService from './store/services';
+import { saveCoursesAction } from './store/courses/actions';
+import { saveAuthorsAction } from './store/authors/actions';
 
 const App = () => {
-	const [courses, setCourses] = useState(mockedCoursesList);
-	const [filteredCourses, setFilteredCourses] = useState();
-	const [authors, setAuthors] = useState(mockedAuthorsList);
+	const dispatch = useDispatch();
 
-	const searchedCoursesRef = useRef();
+	useEffect(() => {
+		const getAllCourses = async () => {
+			const response = await apiService.getCourses();
+			const data = await response.json();
+			dispatch(saveCoursesAction(data.result));
+		};
 
-	const addNewCourse = (newCourse) => {
-		setCourses((previousState) => {
-			return [...previousState, newCourse];
-		});
-	};
+		const getAuthors = async () => {
+			const response = await apiService.getAuthors();
+			const data = await response.json();
+			dispatch(saveAuthorsAction(data.result));
+		};
 
-	const searchThroughCourses = () => {
-		if (searchedCoursesRef.current.value === '') {
-			setFilteredCourses(courses);
-		} else {
-			setFilteredCourses(() =>
-				courses.filter(
-					(course) =>
-						course.title.toLowerCase() ===
-							searchedCoursesRef.current.value.toLowerCase() ||
-						course.id === searchedCoursesRef.current.value
-				)
-			);
-		}
-	};
-
-	const updateAuthors = (updatedAuthors) => {
-		setAuthors((previousState) => {
-			return [...previousState, ...updatedAuthors];
-		});
-	};
+		getAllCourses();
+		getAuthors();
+	}, [dispatch]);
 
 	return (
 		<Router>
 			<Header />
-			<AllRoutes
-				courses={courses}
-				filteredCourses={filteredCourses}
-				authors={authors}
-				setFilteredCourses={setFilteredCourses}
-				searchThroughCourses={searchThroughCourses}
-				searchedCoursesRef={searchedCoursesRef}
-				addNewCourse={addNewCourse}
-				updateAuthors={updateAuthors}
-			/>
+			<AllRoutes />
 		</Router>
 	);
 };

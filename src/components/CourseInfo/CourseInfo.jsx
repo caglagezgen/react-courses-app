@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 
 import Button from '../../common/Button/Button';
 
@@ -7,11 +9,17 @@ import getCourseDuration from '../../helpers/getCourseDuration';
 import formatCreationDate from '../../helpers/formatCreationDate';
 import findAuthorsById from '../../helpers/findAuthorsById';
 
+import { getCoursesSelector } from 'store/courses/selectors';
+import { getAuthorsSelector } from 'store/authors/selectors';
+
 import { BACK_TO_COURSES_BUTTON_TEXT } from '../../constants';
 
-const CourseInfo = ({ courses, authors }) => {
-	const [course, setCourse] = useState();
+const CourseInfo = () => {
+	const [course, setCourse] = useState(useSelector(getCoursesSelector));
 	const [courseAuthors, setCourseAuthors] = useState();
+
+	const courses = useSelector(getCoursesSelector);
+	const authors = useSelector(getAuthorsSelector);
 
 	const params = useParams();
 	const navigate = useNavigate();
@@ -55,7 +63,7 @@ const CourseInfo = ({ courses, authors }) => {
 					<p>
 						<strong>Authors:</strong>
 						{courseAuthors?.map((author, idx) => (
-							<span key={author?.id}>
+							<span key={uuidv4()}>
 								{' '}
 								{author?.name}
 								{courseAuthors.length === idx + 1 ? '' : ','}
