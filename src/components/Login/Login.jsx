@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -11,14 +11,11 @@ import getTokenFromLocalStorage from '../../helpers/getTokenFromLocalStorage';
 
 import { LOGIN_BUTTON_TEXT } from '../../constants';
 
-const Login = () => {
+const Login = ({ forwardedRef }) => {
 	const [loginError, setLoginError] = useState(false);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-
-	const emailRef = useRef();
-	const passwordRef = useRef();
 
 	useEffect(() => {
 		if (getTokenFromLocalStorage()) {
@@ -32,8 +29,8 @@ const Login = () => {
 			const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
 				method: 'POST',
 				body: JSON.stringify({
-					email: emailRef.current.value,
-					password: passwordRef.current.value,
+					email: forwardedRef.current.children[0].children[1].value,
+					password: forwardedRef.current.children[1].children[1].value,
 				}),
 				headers: {
 					'Content-Type': 'application/json',
@@ -59,8 +56,8 @@ const Login = () => {
 					setLoginError(false);
 				}, 5000);
 
-				emailRef.current.value = '';
-				passwordRef.current.value = '';
+				forwardedRef.current.children[0].children[1].value = '';
+				forwardedRef.current.children[1].children[1].value = '';
 			}
 		} catch (error) {
 			console.error(error);
@@ -78,19 +75,15 @@ const Login = () => {
 					type='email'
 					labelText='Email'
 					placeholderText='Enter email'
-					width={100}
 					alignSelf='start'
-					refValue={emailRef}
-					marginBottom={5}
+					ref={forwardedRef}
 				/>
 				<Input
 					type='password'
 					labelText='Password'
 					placeholderText='Enter password'
-					width={100}
 					alignSelf='start'
-					refValue={passwordRef}
-					marginBottom={5}
+					ref={forwardedRef}
 				/>
 				<Button buttonText={LOGIN_BUTTON_TEXT} />
 			</form>
