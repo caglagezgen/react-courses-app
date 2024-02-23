@@ -19,7 +19,7 @@ const CourseDescription = ({
 			<textarea
 				ref={descriptionRef}
 				placeholder='Enter description'
-				className='border border-yellow-400 w-[100%] p-3 h-28 rounded-md'
+				className='border border-#111827-400 w-[100%] p-3 h-28 rounded-md'
 				onChange={onChangeDescription}
 			></textarea>
 			{showDescriptionError && (

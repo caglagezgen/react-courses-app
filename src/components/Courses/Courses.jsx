@@ -1,11 +1,13 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import SearchBar from './components/SearchBar/SearchBar';
 import Button from '../../common/Button/Button';
 import CourseCard from './components/CourseCard/CourseCard';
 
+import { getCoursesSelector } from '../../store/courses/selectors';
+import { getAuthorsSelector } from '../../store/authors/selectors';
 import findAuthorsById from '../../helpers/findAuthorsById';
 
 import {
@@ -13,18 +15,36 @@ import {
 	ADD_NEW_COURSE_BUTTON_TEXT,
 } from '../../constants';
 
-const Courses = ({
-	courses,
-	authors,
-	resetCoursesState,
-	searchedCoursesRef,
-	searchThroughCourses,
-}) => {
+const Courses = () => {
+	const [filterableCourses, setFilterableCourses] = useState();
+
+	const allCourses = useSelector(getCoursesSelector);
+	const authors = useSelector(getAuthorsSelector);
+
+	const searchedCoursesRef = useRef();
+
+	const searchThroughCourses = () => {
+		if (searchedCoursesRef.current.value === '') {
+			setFilterableCourses(allCourses);
+		} else {
+			setFilterableCourses(filterCourses(allCourses, searchedCoursesRef));
+		}
+	};
+
+	useEffect(() => {
+		//Runs on initial render and when course is deleted
+		if (searchedCoursesRef.current.value === '') {
+			setFilterableCourses(allCourses);
+		} else {
+			setFilterableCourses(filterCourses(allCourses, searchedCoursesRef));
+		}
+	}, [allCourses]);
+
 	return (
 		<div className='flex-col'>
 			<div className='grid grid-cols-2'>
 				<div className='flex items-center justify-around mx-10'>
-					<SearchBar marginRight={4} ref={searchedCoursesRef} />
+					<SearchBar marginRight={4} searchedCoursesRef={searchedCoursesRef} />
 					<Button
 						buttonText={SEARCH_BUTTON_TEXT}
 						onClick={searchThroughCourses}
@@ -34,12 +54,12 @@ const Courses = ({
 					<Link to='/courses/add'>
 						<Button
 							buttonText={ADD_NEW_COURSE_BUTTON_TEXT}
-							onClick={resetCoursesState}
+							onClick={() => setFilterableCourses(allCourses)}
 						/>
 					</Link>
 				</div>
 			</div>
-			{courses.map((course) => (
+			{filterableCourses?.map((course) => (
 				<CourseCard
 					key={course.id}
 					id={course.id}
@@ -54,26 +74,14 @@ const Courses = ({
 	);
 };
 
-export default Courses;
+function filterCourses(courses, searchedCoursesRef) {
+	return courses.filter(
+		(course) =>
+			course.title
+				.toLowerCase()
+				.includes(searchedCoursesRef.current.value.toLowerCase()) ||
+			course.id === searchedCoursesRef.current.value
+	);
+}
 
-Courses.propTypes = {
-	authors: PropTypes.arrayOf(
-		PropTypes.shape({
-			id: PropTypes.string,
-			name: PropTypes.string,
-		})
-	),
-	courses: PropTypes.arrayOf(
-		PropTypes.shape({
-			id: PropTypes.string,
-			title: PropTypes.string,
-			description: PropTypes.string,
-			duration: PropTypes.number,
-			creationDate: PropTypes.string,
-			authors: PropTypes.arrayOf(PropTypes.string),
-		})
-	),
-	resetCoursesState: PropTypes.func,
-	searchedCoursesRef: PropTypes.object,
-	searchThroughCourses: PropTypes.func,
-};
+export default Courses;

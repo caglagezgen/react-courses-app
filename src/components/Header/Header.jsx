@@ -1,19 +1,26 @@
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { BRAND_NAME } from '../../constants';
 
 import Logo from './components/Logo/Logo';
 import Button from '../../common/Button/Button.jsx';
-import { BRAND_NAME } from '../../constants';
 
-import getUserInfoFromLocalStorage from '../../helpers/getUserInfoFromLocalStorage';
+import getTokenFromLocalStorage from '../../helpers/getTokenFromLocalStorage';
+import { logoutUserAction } from '../../store/user/actions';
+import { getUserSelector } from '../../store/user/selectors';
 
 const Header = () => {
+	const loggedUser = useSelector(getUserSelector);
+
+	const dispatch = useDispatch();
+
 	const navigate = useNavigate();
+
 	const location = useLocation();
 
-	const loggedUser = getUserInfoFromLocalStorage();
-
 	const logout = () => {
-		localStorage.removeItem('user');
+		localStorage.removeItem('token');
+		dispatch(logoutUserAction());
 		navigate('/login');
 	};
 
@@ -24,11 +31,11 @@ const Header = () => {
 				<h1 className='ml-2 cursor-pointer font-bold'>{BRAND_NAME}</h1>
 			</div>
 			<div className='flex items-center'>
-				{localStorage.getItem('user') &&
+				{getTokenFromLocalStorage() &&
 					location.pathname !== '/login' &&
 					location.pathname !== '/registration' && (
 						<>
-							<p className='mr-4 font-bold'>{loggedUser?.name}</p>
+							<p className='mr-4 font-bold'>{loggedUser.name}</p>
 							<Button className='m-auto' buttonText='Logout' onClick={logout} />
 						</>
 					)}

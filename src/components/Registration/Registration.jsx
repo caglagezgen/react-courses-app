@@ -1,84 +1,84 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
-import InvalidCredentials from '../InvalidCredentials/InvalidCredentials';
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
+import InvalidCredentials from '../InvalidCredentials/InvalidCredentials';
 
-import getUserInfoFromLocalStorage from '../../helpers/getUserInfoFromLocalStorage';
+import { saveUserAction } from '../../store/user/actions';
+import getTokenFromLocalStorage from '../../helpers/getTokenFromLocalStorage';
 
-import { REGISTRATION_BUTTON_TEXT } from '../../constants';
+import { LOGIN_BUTTON_TEXT } from '../../constants';
 
-const Registration = () => {
-	const [registrationError, setRegistrationError] = useState(false);
+const Login = ({ forwardedRef }) => {
+	const [loginError, setLoginError] = useState(false);
 
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const loggedUser = getUserInfoFromLocalStorage();
-
-	const nameRef = useRef();
-	const emailRef = useRef();
-	const passwordRef = useRef();
-
 	useEffect(() => {
-		if (loggedUser?.name && loggedUser?.token) {
+		if (getTokenFromLocalStorage()) {
 			navigate('/courses');
 		}
-	}, [loggedUser?.name, loggedUser?.token, navigate]);
+	}, [navigate]);
 
-	const registerUser = async (e) => {
+	const loginUser = async (e) => {
 		e.preventDefault();
+		try {
+			const response = await fetch(`${process.env.REACT_APP_API_URL}/login`, {
+				method: 'POST',
+				body: JSON.stringify({
+					email: forwardedRef.current.children[0].children[1].value,
+					password: forwardedRef.current.children[1].children[1].value,
+				}),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
 
-		const response = await fetch(`${process.env.REACT_APP_API_URL}/register`, {
-			method: 'POST',
-			body: JSON.stringify({
-				name: nameRef.current?.value,
-				email: emailRef.current?.value,
-				password: passwordRef.current?.value,
-			}),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		const data = await response.json();
+			const data = await response.json();
 
-		if (data.successful) {
-			navigate('/login');
-		} else {
-			setRegistrationError(true);
+			if (data.successful) {
+				dispatch(
+					saveUserAction({
+						name: data.user.name,
+						email: data.user.email,
+						token: data.result.split(' ')[1],
+					})
+				);
+				localStorage.setItem('token', data.result.split(' ')[1]);
+				navigate('/courses');
+			} else {
+				setLoginError(true);
 
-			setTimeout(() => {
-				setRegistrationError(false);
-			}, 5000);
+				setTimeout(() => {
+					setLoginError(false);
+				}, 5000);
 
-			nameRef.current.value = '';
-			emailRef.current.value = '';
-			passwordRef.current.value = '';
+				forwardedRef.current.children[0].children[1].value = '';
+				forwardedRef.current.children[1].children[1].value = '';
+			}
+		} catch (error) {
+			console.error(error);
 		}
 	};
+
 	return (
 		<>
-			{registrationError && <InvalidCredentials />}
+			{loginError && <InvalidCredentials />}
 			<form
-				className='flex flex-col  items-center w-[25%] m-auto'
-				onSubmit={registerUser}
+				className='flex flex-col  items-center w-[20%] m-auto'
+				onSubmit={loginUser}
 			>
-				<Input
-					labelText='Name'
-					placeholderText='Enter name'
-					width={100}
-					alignSelf='start'
-					marginBottom={5}
-					ref={nameRef}
-				/>
 				<Input
 					type='email'
 					labelText='Email'
 					placeholderText='Enter email'
 					width={100}
 					alignSelf='start'
+					ref={forwardedRef}
 					marginBottom={5}
-					ref={emailRef}
 				/>
 				<Input
 					type='password'
@@ -86,19 +86,24 @@ const Registration = () => {
 					placeholderText='Enter password'
 					width={100}
 					alignSelf='start'
+					ref={forwardedRef}
 					marginBottom={5}
-					ref={passwordRef}
 				/>
-				<Button buttonText={REGISTRATION_BUTTON_TEXT} />
+				<Button buttonText={LOGIN_BUTTON_TEXT} />
 			</form>
 			<p className='text-center mt-5'>
-				If you have an account you can{' '}
-				<Link to='/login' className='text-blue-500' title='Go to Login page'>
-					Login
-				</Link>
+				If you don't have an account you can{' '}
+				<Link
+					to='/registration'
+					className='text-blue-500'
+					title='Go to Login page'
+				>
+					Register
+				</Link>{' '}
+				one
 			</p>
 		</>
 	);
 };
 
-export default Registration;
+export default Login;
