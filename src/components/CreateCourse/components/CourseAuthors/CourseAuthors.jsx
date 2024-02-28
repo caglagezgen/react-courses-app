@@ -3,28 +3,14 @@ import Button from '../../../../common/Button/Button';
 
 import { DELETE_AUTHOR_BUTTON_TEXT } from '../../../../constants';
 
-const CourseAuthors = ({
-	courseAuthors,
-	setCourseAuthors,
-	authors,
-	setExistingAuthors,
-	setNewAuthors,
-}) => {
+const CourseAuthors = ({ courseAuthors, setCourseAuthors, setNewAuthors }) => {
 	const deleteCourseAuthor = (courseAuthor) => {
 		setCourseAuthors((previousState) =>
 			previousState.filter((author) => author !== courseAuthor)
 		);
-		if (authors.includes(courseAuthor)) {
-			setExistingAuthors((previousState) => {
-				return [...previousState, courseAuthor];
-			});
-		} else {
-			setNewAuthors((previousState) =>
-				previousState.filter(
-					(newAuthor) => newAuthor.name !== courseAuthor.name
-				)
-			);
-		}
+		setNewAuthors((previousState) =>
+			previousState.filter((newAuthor) => newAuthor.name !== courseAuthor.name)
+		);
 	};
 	return (
 		<>
@@ -54,13 +40,6 @@ CourseAuthors.propTypes = {
 			name: PropTypes.string,
 		})
 	),
-	authors: PropTypes.arrayOf(
-		PropTypes.shape({
-			id: PropTypes.string,
-			name: PropTypes.string,
-		})
-	),
 	setCourseAuthors: PropTypes.func,
-	setExistingAuthors: PropTypes.func,
 	setNewAuthors: PropTypes.func,
 };

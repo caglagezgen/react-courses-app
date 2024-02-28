@@ -2,6 +2,7 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { v4 as uuidv4 } from 'uuid';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../../common/Button/Button';
 
@@ -12,12 +13,19 @@ import CourseDuration from './components/CourseDuration/CourseDuration';
 import CourseAuthors from './components/CourseAuthors/CourseAuthors';
 import Authors from './components/Authors/Authors';
 
+import { addCourseAction } from '../../store/courses/actions';
+import { addAuthorAction } from '../../store/authors/actions';
+import { getAuthorsSelector } from '../../store/authors/selectors';
+import { getCoursesSelector } from '../../store/courses/selectors';
+
 import { CREATE_COURSE_BUTTON_TEXT } from '../../constants';
 
-const CreateCourse = ({ authors, addNewCourse, updateAuthors }) => {
+const CreateCourse = () => {
+	const authors = useSelector(getAuthorsSelector);
+	const courses = useSelector(getCoursesSelector);
+
 	const [courseAuthors, setCourseAuthors] = useState([]);
 	const [newAuthors, setNewAuthors] = useState([]);
-	const [existingAuthors, setExistingAuthors] = useState(authors);
 	const [duration, setDuration] = useState();
 	const [showDescriptionError, setShowDescriptionError] = useState(false);
 	const [showTitleError, setShowTitleError] = useState(false);
@@ -27,29 +35,50 @@ const CreateCourse = ({ authors, addNewCourse, updateAuthors }) => {
 	const newAuthorRef = useRef();
 	const titleRef = useRef();
 
+	const dispatch = useDispatch();
+
 	const navigate = useNavigate();
 
 	const createNewCourse = () => {
+		const courseNameExists = courses.some(
+			(course) => course.title === titleRef.current.value
+		);
+
 		if (
 			titleRef.current.value === '' ||
 			descriptionRef.current.value === '' ||
 			duration === undefined ||
-			duration === '' ||
+			duration === 0 ||
 			courseAuthors.length === 0 ||
 			showDescriptionError ||
-			showTitleError
+			showTitleError ||
+			courseNameExists
 		) {
-			alert('Please fill all the fields');
+			alert(
+				courseNameExists
+					? 'Course with this title already exists'
+					: 'Please fill all the fields'
+			);
 		} else {
-			addNewCourse({
-				id: uuidv4(),
-				title: titleRef.current.value,
-				description: descriptionRef.current.value,
-				duration,
-				creationDate: new Date().toDateString(),
-				authors: courseAuthors.map((courseAuthor) => courseAuthor.id),
-			});
-			updateAuthors(newAuthors);
+			dispatch(
+				addCourseAction({
+					id: uuidv4(),
+					title: titleRef.current.value,
+					description: descriptionRef.current.value,
+					duration,
+					creationDate: new Date().toDateString(),
+					authors: courseAuthors.map((courseAuthor) => courseAuthor.id),
+				})
+			);
+
+			const newlyCreatedAuthors = newAuthors.filter((newAuthor) =>
+				courseAuthors.includes(newAuthor)
+			);
+
+			newlyCreatedAuthors.forEach((newlyCreatedAuthor) =>
+				dispatch(addAuthorAction(newlyCreatedAuthor))
+			);
+
 			navigate('/courses');
 		}
 	};
@@ -79,27 +108,22 @@ const CreateCourse = ({ authors, addNewCourse, updateAuthors }) => {
 				<div className='grid grid-cols-2 gap-10 p-6'>
 					<div>
 						<AddNewAuthor
-							ref={newAuthorRef}
+							newAuthorRef={newAuthorRef}
 							showAuthorError={showAuthorError}
 							setShowAuthorError={setShowAuthorError}
 							setNewAuthors={setNewAuthors}
 							setCourseAuthors={setCourseAuthors}
 							courseAuthors={courseAuthors}
-							existingAuthors={existingAuthors}
+							authors={authors}
 						/>
 						<CourseDuration duration={duration} setDuration={setDuration} />
 					</div>
 					<div className='w-[65%] mx-auto'>
-						<Authors
-							existingAuthors={existingAuthors}
-							setCourseAuthors={setCourseAuthors}
-							setExistingAuthors={setExistingAuthors}
-						/>
+						<Authors authors={authors} setCourseAuthors={setCourseAuthors} />
 						<CourseAuthors
 							authors={authors}
 							courseAuthors={courseAuthors}
 							setCourseAuthors={setCourseAuthors}
-							setExistingAuthors={setExistingAuthors}
 							setNewAuthors={setNewAuthors}
 						/>
 					</div>

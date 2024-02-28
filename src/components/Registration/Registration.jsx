@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
-import InvalidCredentials from '../InvalidCredentials/InvalidCredentials';
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
+import InvalidCredentials from '../InvalidCredentials/InvalidCredentials';
 
-import getUserInfoFromLocalStorage from '../../helpers/getUserInfoFromLocalStorage';
+import getTokenFromLocalStorage from '../../helpers/getTokenFromLocalStorage';
 
 import { REGISTRATION_BUTTON_TEXT } from '../../constants';
 
@@ -14,17 +14,15 @@ const Registration = () => {
 
 	const navigate = useNavigate();
 
-	const loggedUser = getUserInfoFromLocalStorage();
-
 	const nameRef = useRef();
 	const emailRef = useRef();
 	const passwordRef = useRef();
 
 	useEffect(() => {
-		if (loggedUser?.name && loggedUser?.token) {
+		if (getTokenFromLocalStorage()) {
 			navigate('/courses');
 		}
-	}, [loggedUser?.name, loggedUser?.token, navigate]);
+	}, [navigate]);
 
 	const registerUser = async (e) => {
 		e.preventDefault();
@@ -69,7 +67,7 @@ const Registration = () => {
 					width={100}
 					alignSelf='start'
 					marginBottom={5}
-					ref={nameRef}
+					refValue={nameRef}
 				/>
 				<Input
 					type='email'
@@ -78,7 +76,7 @@ const Registration = () => {
 					width={100}
 					alignSelf='start'
 					marginBottom={5}
-					ref={emailRef}
+					refValue={emailRef}
 				/>
 				<Input
 					type='password'
@@ -87,7 +85,7 @@ const Registration = () => {
 					width={100}
 					alignSelf='start'
 					marginBottom={5}
-					ref={passwordRef}
+					refValue={passwordRef}
 				/>
 				<Button buttonText={REGISTRATION_BUTTON_TEXT} />
 			</form>

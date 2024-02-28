@@ -1,29 +1,30 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
-import InvalidCredentials from '../InvalidCredentials/InvalidCredentials';
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
+import InvalidCredentials from '../InvalidCredentials/InvalidCredentials';
 
-import getUserInfoFromLocalStorage from '../../helpers/getUserInfoFromLocalStorage';
+import { saveUserAction } from '../../store/user/actions';
+import getTokenFromLocalStorage from '../../helpers/getTokenFromLocalStorage';
 
 import { LOGIN_BUTTON_TEXT } from '../../constants';
 
 const Login = () => {
 	const [loginError, setLoginError] = useState(false);
 
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const emailRef = useRef();
 	const passwordRef = useRef();
 
-	const loggedUser = getUserInfoFromLocalStorage();
-
 	useEffect(() => {
-		if (loggedUser?.name && loggedUser?.token) {
+		if (getTokenFromLocalStorage()) {
 			navigate('/courses');
 		}
-	}, [loggedUser?.name, loggedUser?.token, navigate]);
+	}, [navigate]);
 
 	const loginUser = async (e) => {
 		e.preventDefault();
@@ -42,13 +43,14 @@ const Login = () => {
 			const data = await response.json();
 
 			if (data.successful) {
-				localStorage.setItem(
-					'user',
-					JSON.stringify({
-						token: data.result.split(' ')[1],
+				dispatch(
+					saveUserAction({
 						name: data.user.name,
+						email: data.user.email,
+						token: data.result.split(' ')[1],
 					})
 				);
+				localStorage.setItem('token', data.result.split(' ')[1]);
 				navigate('/courses');
 			} else {
 				setLoginError(true);
@@ -78,7 +80,7 @@ const Login = () => {
 					placeholderText='Enter email'
 					width={100}
 					alignSelf='start'
-					ref={emailRef}
+					refValue={emailRef}
 					marginBottom={5}
 				/>
 				<Input
@@ -87,7 +89,7 @@ const Login = () => {
 					placeholderText='Enter password'
 					width={100}
 					alignSelf='start'
-					ref={passwordRef}
+					refValue={passwordRef}
 					marginBottom={5}
 				/>
 				<Button buttonText={LOGIN_BUTTON_TEXT} />

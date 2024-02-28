@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 import AuthorItem from '../AuthorItem/AuthorItem';
 
-const Authors = ({ existingAuthors, setCourseAuthors, setExistingAuthors }) => {
+const Authors = ({ authors, setCourseAuthors }) => {
 	const addAuthorFromTheExistingList = (author) => {
 		setCourseAuthors((previousState) => {
 			if (!previousState.includes(author)) {
@@ -11,20 +11,12 @@ const Authors = ({ existingAuthors, setCourseAuthors, setExistingAuthors }) => {
 				return previousState;
 			}
 		});
-		setExistingAuthors((previousState) => {
-			return previousState.filter(
-				(existingAuthor) => existingAuthor.name !== author.name
-			);
-		});
 	};
 
 	return (
 		<>
 			<p className='text-center font-bold mb-5'>Authors</p>
-			<AuthorItem
-				authors={existingAuthors}
-				addAuthor={addAuthorFromTheExistingList}
-			/>
+			<AuthorItem authors={authors} addAuthor={addAuthorFromTheExistingList} />
 		</>
 	);
 };
@@ -32,6 +24,12 @@ const Authors = ({ existingAuthors, setCourseAuthors, setExistingAuthors }) => {
 export default Authors;
 
 Authors.propTypes = {
+	authors: PropTypes.arrayOf(
+		PropTypes.shape({
+			id: PropTypes.string,
+			name: PropTypes.string,
+		})
+	),
 	setExistingAuthors: PropTypes.func,
 	setCourseAuthors: PropTypes.func,
 	existingAuthors: PropTypes.arrayOf(
