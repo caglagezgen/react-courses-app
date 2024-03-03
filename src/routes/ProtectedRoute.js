@@ -1,9 +1,9 @@
 import { Navigate } from 'react-router-dom';
 
-import getTokenFromLocalStorage from '../helpers/getTokenFromLocalStorage';
+import getUserFromLocalStorage from '../helpers/getUserInfoFromLocalStorage';
 
 const ProtectedRoute = ({ children }) => {
-	if (!getTokenFromLocalStorage()) {
+	if (!getUserFromLocalStorage()?.token) {
 		return <Navigate to='/login' replace />;
 	}
 	return children;

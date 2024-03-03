@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from 'uuid';
 
 import Button from '../../common/Button/Button';
@@ -9,30 +9,35 @@ import getCourseDuration from '../../helpers/getCourseDuration';
 import formatCreationDate from '../../helpers/formatCreationDate';
 import findAuthorsById from '../../helpers/findAuthorsById';
 
-import { getCoursesSelector } from 'store/courses/selectors';
-import { getAuthorsSelector } from 'store/authors/selectors';
+import { getCourse } from '../../store/course/thunk';
+import { clearCurrentCourse } from '../../store/course/actions';
+import { getCourseSelector } from '../../store/course/selectors';
+import { getAuthorsSelector } from '../../store/authors/selectors';
 
 import { BACK_TO_COURSES_BUTTON_TEXT } from '../../constants';
 
 const CourseInfo = () => {
-	const [course, setCourse] = useState(useSelector(getCoursesSelector));
-	const [courseAuthors, setCourseAuthors] = useState();
+	const [courseAuthors, setCourseAuthors] = useState([]);
 
-	const courses = useSelector(getCoursesSelector);
 	const authors = useSelector(getAuthorsSelector);
+	const course = useSelector(getCourseSelector);
 
 	const params = useParams();
+
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		setCourse(() => {
-			const selectedCourse = courses.find(
-				(course) => course.id === params.courseId
-			);
-			setCourseAuthors(findAuthorsById(authors, selectedCourse?.authors));
-			return selectedCourse;
-		});
-	}, [authors, courses, params.courseId]);
+		dispatch(getCourse(params.courseId));
+
+		return () => {
+			dispatch(clearCurrentCourse());
+		};
+	}, [params.courseId, authors, dispatch]);
+
+	useEffect(() => {
+		setCourseAuthors(findAuthorsById(authors, course.authors));
+	}, [authors, course.authors]);
 
 	return (
 		<>

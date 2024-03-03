@@ -1,16 +1,27 @@
 import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 import InvalidCredentials from '../InvalidCredentials/InvalidCredentials';
 
-import getTokenFromLocalStorage from '../../helpers/getTokenFromLocalStorage';
+import { register } from '../../store/user/thunk';
+import {
+	registrationErrorAction,
+	successfullRegistrationAction,
+} from '../../store/user/actions';
+import { getUserSelector } from '../../store/user/selectors';
+import getUserFromLocalStorage from '../../helpers/getUserInfoFromLocalStorage';
 
 import { REGISTRATION_BUTTON_TEXT } from '../../constants';
 
 const Registration = () => {
 	const [registrationError, setRegistrationError] = useState(false);
+
+	const loggedUser = useSelector(getUserSelector);
+
+	const dispatch = useDispatch();
 
 	const navigate = useNavigate();
 
@@ -19,40 +30,41 @@ const Registration = () => {
 	const passwordRef = useRef();
 
 	useEffect(() => {
-		if (getTokenFromLocalStorage()) {
+		if (getUserFromLocalStorage()?.token) {
 			navigate('/courses');
 		}
 	}, [navigate]);
 
-	const registerUser = async (e) => {
-		e.preventDefault();
-
-		const response = await fetch(`${process.env.REACT_APP_API_URL}/register`, {
-			method: 'POST',
-			body: JSON.stringify({
-				name: nameRef.current?.value,
-				email: emailRef.current?.value,
-				password: passwordRef.current?.value,
-			}),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		const data = await response.json();
-
-		if (data.successful) {
+	useEffect(() => {
+		if (loggedUser.successfullRegistration && !loggedUser.registrationError) {
 			navigate('/login');
-		} else {
+			dispatch(successfullRegistrationAction(false));
+		}
+		if (loggedUser.registrationError) {
 			setRegistrationError(true);
 
 			setTimeout(() => {
 				setRegistrationError(false);
+				dispatch(registrationErrorAction(false));
 			}, 5000);
-
-			nameRef.current.value = '';
-			emailRef.current.value = '';
-			passwordRef.current.value = '';
 		}
+	}, [
+		loggedUser.successfullRegistration,
+		loggedUser.registrationError,
+		navigate,
+		dispatch,
+	]);
+
+	const registerUser = async (e) => {
+		e.preventDefault();
+
+		dispatch(
+			register(
+				nameRef.current.value,
+				emailRef.current.value,
+				passwordRef.current.value
+			)
+		);
 	};
 	return (
 		<>

@@ -1,11 +1,13 @@
 import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { v4 as uuidv4 } from 'uuid';
 
 import SearchBar from './components/SearchBar/SearchBar';
 import Button from '../../common/Button/Button';
 import CourseCard from './components/CourseCard/CourseCard';
 
+import { getUserSelector } from '../../store/user/selectors';
 import { getCoursesSelector } from '../../store/courses/selectors';
 import { getAuthorsSelector } from '../../store/authors/selectors';
 import findAuthorsById from '../../helpers/findAuthorsById';
@@ -20,6 +22,7 @@ const Courses = () => {
 
 	const allCourses = useSelector(getCoursesSelector);
 	const authors = useSelector(getAuthorsSelector);
+	const loggedUser = useSelector(getUserSelector);
 
 	const searchedCoursesRef = useRef();
 
@@ -50,18 +53,20 @@ const Courses = () => {
 						onClick={searchThroughCourses}
 					/>
 				</div>
-				<div className='flex justify-end mx-10'>
-					<Link to='/courses/add'>
-						<Button
-							buttonText={ADD_NEW_COURSE_BUTTON_TEXT}
-							onClick={() => setFilterableCourses(allCourses)}
-						/>
-					</Link>
-				</div>
+				{loggedUser.role === 'admin' && (
+					<div className='flex justify-end mx-10'>
+						<Link to='/courses/add'>
+							<Button
+								buttonText={ADD_NEW_COURSE_BUTTON_TEXT}
+								onClick={() => setFilterableCourses(allCourses)}
+							/>
+						</Link>
+					</div>
+				)}
 			</div>
 			{filterableCourses?.map((course) => (
 				<CourseCard
-					key={course.id}
+					key={uuidv4()}
 					id={course.id}
 					title={course.title}
 					description={course.description}

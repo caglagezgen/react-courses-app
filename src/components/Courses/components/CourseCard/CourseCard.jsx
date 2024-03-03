@@ -1,20 +1,17 @@
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useNavigate, Link } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import Button from '../../../../common/Button/Button';
 
+import { deleteCourse } from '../../../../store/courses/thunk';
 import formatCreationDate from '../../../../helpers/formatCreationDate';
 import getCourseDuration from '../../../../helpers/getCourseDuration';
+import { getUserSelector } from '../../../../store/user/selectors';
 
-import {
-	SHOW_COURSE_BUTTON_TEXT,
-	EDIT_COURSE_BUTTON_TEXT,
-	DELETE_COURSE_BUTTON_TEXT,
-} from '../../../../constants';
-import { deleteCourseAction } from 'store/courses/actions';
+import { SHOW_COURSE_BUTTON_TEXT } from '../../../../constants';
 
 const CourseCard = ({
 	id,
@@ -24,13 +21,11 @@ const CourseCard = ({
 	duration,
 	authors,
 }) => {
+	const loggedUser = useSelector(getUserSelector);
+
 	const dispatch = useDispatch();
 
 	const navigate = useNavigate();
-
-	const deleteCourse = () => {
-		dispatch(deleteCourseAction(id));
-	};
 
 	const showCourse = () => {
 		navigate(`/courses/${id}`);
@@ -71,21 +66,25 @@ const CourseCard = ({
 								margin={5}
 								title={`Show ${title} course`}
 							/>
-							<Button
-								buttonText={EDIT_COURSE_BUTTON_TEXT}
-								icon={<FontAwesomeIcon icon='edit' />}
-								width={4}
-								margin={5}
-								title='Update Course'
-							/>
-							<Button
-								buttonText={DELETE_COURSE_BUTTON_TEXT}
-								icon={<FontAwesomeIcon icon='trash-alt' />}
-								width={4}
-								margin={5}
-								onClick={deleteCourse}
-								title='Delete Course'
-							/>
+							{loggedUser.role === 'admin' && (
+								<>
+									<Link to={`/courses/update/${id}`} state='update'>
+										<Button
+											buttonText={<FontAwesomeIcon icon='edit' />}
+											width={4}
+											margin={5}
+											title='Update course'
+										/>
+									</Link>
+									<Button
+										buttonText={<FontAwesomeIcon icon='trash-alt' />}
+										width={4}
+										margin={5}
+										onClick={() => dispatch(deleteCourse(id))}
+										title='Delete course'
+									/>
+								</>
+							)}
 						</div>
 					</div>
 				</div>
