@@ -1,5 +1,3 @@
-// common/Input/Input.jsx
-
 import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
