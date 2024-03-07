@@ -1,18 +1,14 @@
-import { Outlet, Navigate } from 'react-router-dom';
-import getUserFromLocalStorage from '../../helpers/getUserInfoFromLocalStorage';
+import { Navigate } from 'react-router-dom';
 
-const PrivateRoute = ({ requireAdmin = false }) => {
-	const user = getUserFromLocalStorage();
+import getUserFromLocalStorage from '../../helpers/getUserFromLocalStorage';
 
-	if (!user) {
-		return <Navigate to='/login' />;
-	}
-
-	if (requireAdmin && user.role !== 'admin') {
+const PrivateRoute = ({ children }) => {
+	// here we chech the role of the user
+	if (getUserFromLocalStorage()?.role === 'admin') {
+		return children;
+	} else {
 		return <Navigate to='/courses' />;
 	}
-
-	return <Outlet />;
 };
 
 export default PrivateRoute;

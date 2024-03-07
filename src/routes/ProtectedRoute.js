@@ -1,11 +1,15 @@
+import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
-import getUserFromLocalStorage from '../helpers/getUserInfoFromLocalStorage';
+import { getUserSelector } from '../store/user/selectors';
 
 const ProtectedRoute = ({ children }) => {
-	if (!getUserFromLocalStorage()?.token) {
+	const user = useSelector(getUserSelector);
+
+	if (!user) {
 		return <Navigate to='/login' replace />;
 	}
+
 	return children;
 };
 

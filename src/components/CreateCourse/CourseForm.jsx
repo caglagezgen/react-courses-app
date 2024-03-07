@@ -17,7 +17,7 @@ import { getCourseSelector } from '../../store/course/selectors';
 import { addCourse, updateCourse } from '../../store/courses/thunk';
 import { getAuthorsSelector } from '../../store/authors/selectors';
 import { getCoursesSelector } from '../../store/courses/selectors';
-// import { getUserSelector } from '../../store/user/selectors';
+
 import findAuthorsById from '../../helpers/findAuthorsById';
 
 import {

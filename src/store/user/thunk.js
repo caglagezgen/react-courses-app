@@ -7,7 +7,7 @@ import {
 	registrationErrorAction,
 	successfullRegistrationAction,
 } from './actions';
-import getUserFromLocalStorage from '../../helpers/getUserInfoFromLocalStorage';
+import getUserFromLocalStorage from '../../helpers/getUserFromLocalStorage';
 
 export const login = (email, password) => {
 	return async (dispatch) => {

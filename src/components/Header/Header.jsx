@@ -1,13 +1,14 @@
 import { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { BRAND_NAME } from '../../constants';
 
 import Logo from './components/Logo/Logo';
 import Button from '../../common/Button/Button';
 
 import { logoutUser, getLoggedUser } from '../../store/user/thunk';
 import { getUserSelector } from '../../store/user/selectors';
-import getUserFromLocalStorage from '../../helpers/getUserInfoFromLocalStorage';
+import getUserFromLocalStorage from '../../helpers/getUserFromLocalStorage';
 
 const Header = () => {
 	const loggedUser = useSelector(getUserSelector);
@@ -36,7 +37,10 @@ const Header = () => {
 
 	return (
 		<div className='flex justify-between px-10 border-b-2 border-blue-600 mb-12'>
-			<Logo />
+			<div className='flex justify-start items-center'>
+				<Logo />
+				<h1 className='ml-2 cursor-pointer font-bold'>{BRAND_NAME}</h1>
+			</div>
 			<div className='flex items-center'>
 				{getUserFromLocalStorage()?.token &&
 					location.pathname !== '/login' &&

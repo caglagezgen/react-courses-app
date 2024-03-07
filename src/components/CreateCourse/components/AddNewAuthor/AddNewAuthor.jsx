@@ -13,7 +13,6 @@ const AddNewAuthor = ({
 	newAuthorRef,
 	showAuthorError,
 	setShowAuthorError,
-	// setNewAuthors,
 	courseAuthors,
 	authors,
 	setCourseAuthors,

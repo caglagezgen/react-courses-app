@@ -1,4 +1,4 @@
-import getUserFromLocalStorage from '../helpers/getUserInfoFromLocalStorage';
+import getTokenAndUserFromLocalStorage from '../helpers/getUserFromLocalStorage';
 class APIService {
 	getAllCourses() {
 		return fetch(`${process.env.REACT_APP_API_URL}/courses/all`);
@@ -9,7 +9,7 @@ class APIService {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${getUserFromLocalStorage()?.token}`,
+				Authorization: `Bearer ${getTokenAndUserFromLocalStorage()?.token}`,
 			},
 			body: JSON.stringify({
 				title,
@@ -27,7 +27,7 @@ class APIService {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${getUserFromLocalStorage()?.token}`,
+				Authorization: `Bearer ${getTokenAndUserFromLocalStorage()?.token}`,
 			},
 			body: JSON.stringify(body),
 		});
@@ -36,7 +36,7 @@ class APIService {
 		return fetch(`${process.env.REACT_APP_API_URL}/courses/${id}`, {
 			method: 'DELETE',
 			headers: {
-				Authorization: `Bearer ${getUserFromLocalStorage()?.token}`,
+				Authorization: `Bearer ${getTokenAndUserFromLocalStorage()?.token}`,
 			},
 		});
 	}
@@ -48,7 +48,7 @@ class APIService {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
-				Authorization: `Bearer ${getUserFromLocalStorage()?.token}`,
+				Authorization: `Bearer ${getTokenAndUserFromLocalStorage()?.token}`,
 			},
 			body: JSON.stringify({
 				name,
@@ -86,7 +86,7 @@ class APIService {
 	getCurrentUser() {
 		return fetch(`${process.env.REACT_APP_API_URL}/users/me`, {
 			headers: {
-				Authorization: `Bearer ${getUserFromLocalStorage()?.token}`,
+				Authorization: `Bearer ${getTokenAndUserFromLocalStorage()?.token}`,
 			},
 		});
 	}
@@ -94,7 +94,7 @@ class APIService {
 		return fetch(`${process.env.REACT_APP_API_URL}/logout`, {
 			method: 'DELETE',
 			headers: {
-				Authorization: `Bearer ${getUserFromLocalStorage()?.token}`,
+				Authorization: `Bearer ${getTokenAndUserFromLocalStorage()?.token}`,
 			},
 		});
 	}

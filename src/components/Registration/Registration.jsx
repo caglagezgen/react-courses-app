@@ -12,7 +12,7 @@ import {
 	successfullRegistrationAction,
 } from '../../store/user/actions';
 import { getUserSelector } from '../../store/user/selectors';
-import getUserFromLocalStorage from '../../helpers/getUserInfoFromLocalStorage';
+import getUserFromLocalStorage from '../../helpers/getUserFromLocalStorage';
 
 import { REGISTRATION_BUTTON_TEXT } from '../../constants';
 
