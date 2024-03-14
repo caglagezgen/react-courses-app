@@ -1,7 +1,6 @@
-import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState, useRef } from 'react';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { v4 as uuidv4 } from 'uuid';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '../../common/Button/Button';
@@ -13,20 +12,28 @@ import CourseDuration from './components/CourseDuration/CourseDuration';
 import CourseAuthors from './components/CourseAuthors/CourseAuthors';
 import Authors from './components/Authors/Authors';
 
-import { addCourseAction } from '../../store/courses/actions';
-import { addAuthorAction } from '../../store/authors/actions';
+import { getCourse } from '../../store/course/thunk';
+import { getCourseSelector } from '../../store/course/selectors';
+import { addCourse, updateCourse } from '../../store/courses/thunk';
 import { getAuthorsSelector } from '../../store/authors/selectors';
 import { getCoursesSelector } from '../../store/courses/selectors';
 
-import { CREATE_COURSE_BUTTON_TEXT } from '../../constants';
+import findAuthorsById from '../../helpers/findAuthorsById';
 
-const CreateCourse = () => {
+import {
+	CREATE_COURSE_BUTTON_TEXT,
+	UPDATE_COURSE_BUTTON_TEXT,
+} from '../../constants';
+
+const CourseForm = () => {
 	const authors = useSelector(getAuthorsSelector);
 	const courses = useSelector(getCoursesSelector);
+	const course = useSelector(getCourseSelector);
 
+	// const [course, setCourse] = useState();
+	const [formType, setFormType] = useState();
 	const [courseAuthors, setCourseAuthors] = useState([]);
-	const [newAuthors, setNewAuthors] = useState([]);
-	const [duration, setDuration] = useState();
+	const [duration, setDuration] = useState(0);
 	const [showDescriptionError, setShowDescriptionError] = useState(false);
 	const [showTitleError, setShowTitleError] = useState(false);
 	const [showAuthorError, setShowAuthorError] = useState(false);
@@ -35,11 +42,40 @@ const CreateCourse = () => {
 	const newAuthorRef = useRef();
 	const titleRef = useRef();
 
+	const location = useLocation();
+
+	const params = useParams();
+
 	const dispatch = useDispatch();
 
 	const navigate = useNavigate();
 
-	const createNewCourse = () => {
+	useEffect(() => {
+		setFormType(location.pathname.split('/')[2]);
+
+		if (formType === 'update') {
+			dispatch(getCourse(params.courseId));
+
+			setCourseAuthors(findAuthorsById(authors, course.authors));
+
+			titleRef.current.value = course.title;
+			descriptionRef.current.value = course.description;
+
+			setDuration(course.duration);
+		}
+	}, [
+		authors,
+		location.pathname,
+		params.courseId,
+		formType,
+		dispatch,
+		course.title,
+		course.description,
+		course.duration,
+		course.authors,
+	]);
+
+	const submitForm = () => {
 		const courseNameExists = courses.some(
 			(course) => course.title === titleRef.current.value
 		);
@@ -60,25 +96,26 @@ const CreateCourse = () => {
 					: 'Please fill all the fields'
 			);
 		} else {
-			dispatch(
-				addCourseAction({
-					id: uuidv4(),
-					title: titleRef.current.value,
-					description: descriptionRef.current.value,
-					duration,
-					creationDate: new Date().toDateString(),
-					authors: courseAuthors.map((courseAuthor) => courseAuthor.id),
-				})
-			);
-
-			const newlyCreatedAuthors = newAuthors.filter((newAuthor) =>
-				courseAuthors.includes(newAuthor)
-			);
-
-			newlyCreatedAuthors.forEach((newlyCreatedAuthor) =>
-				dispatch(addAuthorAction(newlyCreatedAuthor))
-			);
-
+			if (formType === 'add') {
+				dispatch(
+					addCourse(
+						titleRef.current.value,
+						descriptionRef.current.value,
+						duration,
+						courseAuthors.map((courseAuthor) => courseAuthor.id)
+					)
+				);
+			}
+			if (formType === 'update') {
+				dispatch(
+					updateCourse(params.courseId, {
+						title: titleRef.current.value,
+						description: descriptionRef.current.value,
+						duration,
+						authors: courseAuthors.map((courseAuthor) => courseAuthor.id),
+					})
+				);
+			}
 			navigate('/courses');
 		}
 	};
@@ -90,12 +127,15 @@ const CreateCourse = () => {
 					titleRef={titleRef}
 					showTitleError={showTitleError}
 					setShowTitleError={setShowTitleError}
-					createNewCourse={createNewCourse}
 				/>
 				<div className='flex justify-end items-end'>
 					<Button
-						buttonText={CREATE_COURSE_BUTTON_TEXT}
-						onClick={createNewCourse}
+						buttonText={
+							formType === 'add'
+								? CREATE_COURSE_BUTTON_TEXT
+								: UPDATE_COURSE_BUTTON_TEXT
+						}
+						onClick={submitForm}
 					/>
 				</div>
 			</div>
@@ -111,7 +151,6 @@ const CreateCourse = () => {
 							newAuthorRef={newAuthorRef}
 							showAuthorError={showAuthorError}
 							setShowAuthorError={setShowAuthorError}
-							setNewAuthors={setNewAuthors}
 							setCourseAuthors={setCourseAuthors}
 							courseAuthors={courseAuthors}
 							authors={authors}
@@ -124,7 +163,6 @@ const CreateCourse = () => {
 							authors={authors}
 							courseAuthors={courseAuthors}
 							setCourseAuthors={setCourseAuthors}
-							setNewAuthors={setNewAuthors}
 						/>
 					</div>
 				</div>
@@ -133,9 +171,9 @@ const CreateCourse = () => {
 	);
 };
 
-export default CreateCourse;
+export default CourseForm;
 
-CreateCourse.propTypes = {
+CourseForm.propTypes = {
 	authors: PropTypes.arrayOf(
 		PropTypes.shape({
 			id: PropTypes.string.isRequired,

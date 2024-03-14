@@ -1,15 +1,16 @@
+import React, { forwardRef } from 'react';
 import PropTypes from 'prop-types';
 
 import Input from '../../../../common/Input/Input';
 
-const SearchBar = ({ marginRight, searchedCoursesRef }) => (
+const SearchBar = forwardRef(({ marginRight, searchedCoursesRef }, ref) => (
 	<Input
 		placeholderText='Enter course name or Id'
 		width={100}
 		marginRight={marginRight}
-		refValue={searchedCoursesRef}
+		ref={ref}
 	/>
-);
+));
 
 export default SearchBar;
 

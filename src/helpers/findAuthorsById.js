@@ -1,11 +1,11 @@
 const findAuthorsById = (authors, courseAuthorsIds) => {
-	let coureAuthorsNames = [];
+	let courseAuthorsNames = [];
 	courseAuthorsIds.forEach((courseAuthorId) => {
-		coureAuthorsNames.push(
+		courseAuthorsNames.push(
 			authors.find((author) => author.id === courseAuthorId)
 		);
 	});
-	return coureAuthorsNames;
+	return courseAuthorsNames;
 };
 
 export default findAuthorsById;

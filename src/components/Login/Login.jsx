@@ -50,6 +50,7 @@ const Login = () => {
 						token: data.result.split(' ')[1],
 					})
 				);
+				// here we save the token in the local storage
 				localStorage.setItem('token', data.result.split(' ')[1]);
 				navigate('/courses');
 			} else {
@@ -80,7 +81,7 @@ const Login = () => {
 					placeholderText='Enter email'
 					width={100}
 					alignSelf='start'
-					refValue={emailRef}
+					ref={emailRef}
 					marginBottom={5}
 				/>
 				<Input
@@ -89,7 +90,7 @@ const Login = () => {
 					placeholderText='Enter password'
 					width={100}
 					alignSelf='start'
-					refValue={passwordRef}
+					ref={passwordRef}
 					marginBottom={5}
 				/>
 				<Button buttonText={LOGIN_BUTTON_TEXT} />

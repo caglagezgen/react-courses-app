@@ -5,28 +5,15 @@ import { useDispatch } from 'react-redux';
 import Header from './components/Header/Header';
 import AllRoutes from './routes/AllRoutes';
 
-import apiService from './store/services';
-import { saveCoursesAction } from './store/courses/actions';
-import { saveAuthorsAction } from './store/authors/actions';
+import { getCourses } from './store/courses/thunk';
+import { getAuthors } from './store/authors/thunk';
 
 const App = () => {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		const getAllCourses = async () => {
-			const response = await apiService.getCourses();
-			const data = await response.json();
-			dispatch(saveCoursesAction(data.result));
-		};
-
-		const getAuthors = async () => {
-			const response = await apiService.getAuthors();
-			const data = await response.json();
-			dispatch(saveAuthorsAction(data.result));
-		};
-
-		getAllCourses();
-		getAuthors();
+		dispatch(getCourses());
+		dispatch(getAuthors());
 	}, [dispatch]);
 
 	return (

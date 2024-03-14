@@ -5,12 +5,13 @@ import { DELETE_AUTHOR_BUTTON_TEXT } from '../../../../constants';
 
 const CourseAuthors = ({ courseAuthors, setCourseAuthors, setNewAuthors }) => {
 	const deleteCourseAuthor = (courseAuthor) => {
+		console.log(courseAuthors);
 		setCourseAuthors((previousState) =>
 			previousState.filter((author) => author !== courseAuthor)
 		);
-		setNewAuthors((previousState) =>
-			previousState.filter((newAuthor) => newAuthor.name !== courseAuthor.name)
-		);
+		// setNewAuthors((previousState) =>
+		// 	previousState.filter((newAuthor) => newAuthor.name !== courseAuthor.name)
+		// );
 	};
 	return (
 		<>

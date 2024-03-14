@@ -1,11 +1,9 @@
-export default function getCourseDuration(durationInMinutes) {
-	const hours = Math.floor(durationInMinutes / 60);
-	const minutes = durationInMinutes % 60;
+const getCourseDuration = (duration) => {
+	const hours = `${Math.trunc(duration / 60)}`;
+	const minutes = `${duration % 60}`;
+	return `${hours < 10 ? `0${hours}` : hours}:${
+		minutes < 10 ? `0${minutes}` : minutes
+	}`;
+};
 
-	return (
-		(hours < 10 ? `0${hours}` : hours) +
-		':' +
-		(minutes < 10 ? `0${minutes}` : minutes) +
-		(hours === 1 ? ' hour' : ' hours')
-	);
-}
+export default getCourseDuration;

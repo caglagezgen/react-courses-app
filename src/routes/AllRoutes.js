@@ -1,12 +1,13 @@
 import { useRoutes, Navigate } from 'react-router-dom';
 
-import ProtectedRoute from './ProtectedRoute';
-
 import Courses from '../components/Courses/Courses';
-import CreateCourse from '../components/CreateCourse/CreateCourse';
+import CourseForm from '../components/CreateCourse/CourseForm';
 import CourseInfo from '../components/CourseInfo/CourseInfo';
 import Login from '../components/Login/Login';
 import Registration from '../components/Registration/Registration';
+import PrivateRoute from '../components/PrivateRoute/PrivateRoute';
+
+import ProtectedRoute from './ProtectedRoute';
 
 const AllRoutes = () => {
 	let routes = useRoutes([
@@ -29,10 +30,23 @@ const AllRoutes = () => {
 					path: 'add',
 					element: (
 						<ProtectedRoute>
-							<CreateCourse />
+							<PrivateRoute>
+								<CourseForm />
+							</PrivateRoute>
 						</ProtectedRoute>
 					),
 				},
+				{
+					path: 'update/:courseId',
+					element: (
+						<ProtectedRoute>
+							<PrivateRoute>
+								<CourseForm />
+							</PrivateRoute>
+						</ProtectedRoute>
+					),
+				},
+
 				{
 					path: ':courseId',
 					element: (

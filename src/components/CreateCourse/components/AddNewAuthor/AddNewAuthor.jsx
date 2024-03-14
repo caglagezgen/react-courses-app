@@ -1,20 +1,24 @@
 import PropTypes from 'prop-types';
-import { v4 as uuidv4 } from 'uuid';
+import { useDispatch } from 'react-redux';
 
 import Input from '../../../../common/Input/Input';
 import Button from '../../../../common/Button/Button';
 
+import apiService from '../../../../store/services';
+
 import { CREATE_AUTHOR_BUTTON_TEXT } from '../../../../constants';
+import { addAuthorAction } from '../../../../store/authors/actions';
 
 const AddNewAuthor = ({
 	newAuthorRef,
 	showAuthorError,
 	setShowAuthorError,
-	setNewAuthors,
 	courseAuthors,
 	authors,
 	setCourseAuthors,
 }) => {
+	const dispatch = useDispatch();
+
 	const onChangeAuthorName = (e) => {
 		if (newAuthorRef.current.value.length < 2) {
 			setShowAuthorError(true);
@@ -37,18 +41,18 @@ const AddNewAuthor = ({
 				(existingAuthor) => existingAuthor.name === newAuthorRef.current.value
 			)
 		) {
-			let newAuthor = {
-				id: uuidv4(),
-				name: newAuthorRef.current.value,
+			const addNew = async () => {
+				const response = await apiService.addAuthor(newAuthorRef.current.value);
+				const data = await response.json();
+
+				setCourseAuthors((previousState) => {
+					return [...previousState, data.result];
+				});
+
+				dispatch(addAuthorAction(data.result));
 			};
 
-			setCourseAuthors((previousState) => {
-				return [...previousState, newAuthor];
-			});
-
-			setNewAuthors((previousState) => {
-				return [...previousState, newAuthor];
-			});
+			addNew();
 
 			newAuthorRef.current.value = '';
 			newAuthorRef.current.classList.remove('placeholder:text-red-500');
