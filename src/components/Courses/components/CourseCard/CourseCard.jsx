@@ -32,7 +32,7 @@ const CourseCard = ({
 	};
 
 	return (
-		<div className='border border-grey-700 p-3 m-10 rounded-md'>
+		<div className='card border border-grey-700 p-3 m-10 rounded-md'>
 			<div className='grid grid-cols-5 gap-14'>
 				<div className='col-span-3'>
 					<h1 className='font-bold text-2xl p-3'>{title}</h1>
@@ -41,16 +41,18 @@ const CourseCard = ({
 				<div className='col-span-2'>
 					<div className='flex-col p-3'>
 						<div>
-							<p className='m-2 overflow-ellipsis overflow-hidden whitespace-nowrap'>
+							<div className='m-2 overflow-ellipsis overflow-hidden whitespace-nowrap'>
 								<strong>Authors:</strong>
-								{authors.map((author, idx) => (
-									<span key={uuidv4()}>
-										{' '}
-										{author?.name}
-										{authors.length === idx + 1 ? '' : ','}
-									</span>
-								))}
-							</p>
+								<ul className='inline-block ml-1' data-testid='authors-list'>
+									{authors.map((author, idx) => (
+										<li className='inline-block' key={uuidv4()}>
+											{' '}
+											{author?.name}
+											{authors.length === idx + 1 ? '' : ','}
+										</li>
+									))}
+								</ul>
+							</div>
 							<p className='m-2'>
 								<strong>Duration:</strong> {getCourseDuration(duration)} hours
 							</p>
@@ -66,7 +68,7 @@ const CourseCard = ({
 								margin={5}
 								title={`Show ${title} course`}
 							/>
-							{loggedUser.role === 'admin' && (
+							{loggedUser?.role === 'admin' && (
 								<>
 									<Link to={`/courses/update/${id}`} state='update'>
 										<Button

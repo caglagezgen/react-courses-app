@@ -35,7 +35,7 @@ const Courses = () => {
 	};
 
 	useEffect(() => {
-		if (searchedCoursesRef.current.value === '') {
+		if (searchedCoursesRef.current?.value === '') {
 			setFilterableCourses(allCourses);
 		} else {
 			setFilterableCourses(filterCourses(allCourses, searchedCoursesRef));
@@ -52,7 +52,7 @@ const Courses = () => {
 						onClick={searchThroughCourses}
 					/>
 				</div>
-				{loggedUser.role === 'admin' && (
+				{loggedUser?.role === 'admin' && (
 					<div className='flex justify-end mx-10'>
 						<Link to='/courses/add'>
 							<Button

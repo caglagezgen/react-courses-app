@@ -36,9 +36,12 @@ const Header = () => {
 	}, [dispatch, loggedUser.role, loggedUser.isAuth, location.pathname]);
 
 	return (
-		<div className='flex justify-between px-10 border-b-2 border-blue-600 mb-12'>
+		<div
+			className='flex justify-between px-10 border-b-2 border-blue-600 mb-12'
+			data-testid='header'
+		>
 			<div className='flex justify-start items-center'>
-				<Logo />
+				<Logo data-testid='logo' />
 				<h1 className='ml-2 cursor-pointer font-bold'>{BRAND_NAME}</h1>
 			</div>
 			<div className='flex items-center'>
