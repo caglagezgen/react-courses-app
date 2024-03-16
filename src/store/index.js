@@ -1,8 +1,4 @@
-import {
-	legacy_createStore as createStore,
-	compose,
-	applyMiddleware,
-} from 'redux';
+import { legacy_createStore as createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
@@ -20,8 +16,10 @@ const appInitialState = {
 	user: initialUserState,
 };
 
-const composedEnhancer = compose(applyMiddleware(thunk), composeWithDevTools());
-
-const store = createStore(rootReducer, appInitialState, composedEnhancer);
+const store = createStore(
+	rootReducer,
+	appInitialState,
+	composeWithDevTools(applyMiddleware(thunk))
+);
 
 export default store;
