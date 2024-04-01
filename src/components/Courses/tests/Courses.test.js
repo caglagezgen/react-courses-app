@@ -1,7 +1,13 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { render } from '@testing-library/react';
+import { render, fireEvent } from '@testing-library/react';
+import { createMemoryHistory } from 'history';
+import { ADD_NEW_COURSE_BUTTON_TEXT } from '../../../constants';
 import Courses from '../Courses';
+
+// hide the console errors
+let consoleError = jest.spyOn(console, 'error');
+consoleError.mockImplementation(() => {});
 
 describe('Courses test suite', () => {
 	let componentContainer;
@@ -83,5 +89,22 @@ describe('Courses test suite', () => {
 	test('Number of CourseCards components rendered equal to length of courses array', () => {
 		const cards = componentContainer.getElementsByClassName('card');
 		expect(cards.length).toBe(mockedStore.getState().courses.length);
+	});
+
+	test('CourseForm should be showed after a click on a button "Add new course"', async () => {
+		const history = createMemoryHistory();
+
+		const utils = render(
+			<Router history={history}>
+				<Provider store={mockedStore}>
+					<Courses />
+				</Provider>
+			</Router>
+		);
+
+		const addCourseButton = await utils.findByText(ADD_NEW_COURSE_BUTTON_TEXT);
+		fireEvent.click(addCourseButton);
+
+		expect(history.location.pathname).toBe('/courses/add');
 	});
 });
