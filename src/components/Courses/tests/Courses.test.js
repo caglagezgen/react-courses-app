@@ -1,4 +1,9 @@
-import { BrowserRouter as Router } from 'react-router-dom';
+import {
+	BrowserRouter as Router,
+	MemoryRouter,
+	Route,
+	Routes,
+} from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { render, fireEvent } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
@@ -13,11 +18,13 @@ describe('Courses test suite', () => {
 	let componentContainer;
 	let mockedState = {
 		user: {
-			isAuth: true,
-			name: '',
-			email: 'admin@email.com',
-			token: 'token',
-			role: 'admin',
+			user: {
+				isAuth: true,
+				name: '',
+				email: 'admin@email.com',
+				token: 'token',
+				role: 'admin',
+			},
 		},
 		courses: [
 			{
@@ -75,7 +82,7 @@ describe('Courses test suite', () => {
 		dispatch: jest.fn(),
 	};
 
-	beforeEach(() => {
+	test('Number of CourseCards components rendered equal to length of courses array', () => {
 		const { container } = render(
 			<Router>
 				<Provider store={mockedStore}>
@@ -84,9 +91,6 @@ describe('Courses test suite', () => {
 			</Router>
 		);
 		componentContainer = container;
-	});
-
-	test('Number of CourseCards components rendered equal to length of courses array', () => {
 		const cards = componentContainer.getElementsByClassName('card');
 		expect(cards.length).toBe(mockedStore.getState().courses.length);
 	});
@@ -95,16 +99,22 @@ describe('Courses test suite', () => {
 		const history = createMemoryHistory();
 
 		const utils = render(
-			<Router history={history}>
+			<MemoryRouter initialEntries={['/courses']} history={history}>
 				<Provider store={mockedStore}>
-					<Courses />
+					<Routes>
+						<Route
+							path='/courses/add'
+							element={<div data-testid='course-form'>CourseForm</div>}
+						/>
+						<Route path='/courses' element={<Courses />} />
+					</Routes>
 				</Provider>
-			</Router>
+			</MemoryRouter>
 		);
 
 		const addCourseButton = await utils.findByText(ADD_NEW_COURSE_BUTTON_TEXT);
 		fireEvent.click(addCourseButton);
 
-		expect(history.location.pathname).toBe('/courses/add');
+		expect(utils.getByTestId('course-form')).toBeInTheDocument();
 	});
 });

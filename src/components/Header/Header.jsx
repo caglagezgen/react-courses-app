@@ -33,7 +33,7 @@ const Header = () => {
 		) {
 			dispatch(getLoggedUser());
 		}
-	}, [dispatch, loggedUser.role, loggedUser.isAuth, location.pathname]);
+	}, [dispatch, loggedUser, location]);
 
 	return (
 		<div

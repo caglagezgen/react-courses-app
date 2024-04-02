@@ -14,7 +14,7 @@ const App = () => {
 	useEffect(() => {
 		dispatch(getCourses());
 		dispatch(getAuthors());
-	}, [dispatch]);
+	}, []);
 
 	return (
 		<Router>
